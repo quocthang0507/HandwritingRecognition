@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ML;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace HandwritingRecognition.Controllers
 {
@@ -102,18 +102,20 @@ namespace HandwritingRecognition.Controllers
 		private static string FormatScores(IReadOnlyList<float> scores)
 		{
 			// order is: 0,7,4,6,2,5,8,1,9,3 (the order of labels appear in the training data set)
-			var sb = new StringBuilder();
-			sb.Append($"0: {scores[0]:N3}").AppendLine();
-			sb.Append($"1: {scores[7]:N3}").AppendLine();
-			sb.Append($"2: {scores[4]:N3}").AppendLine();
-			sb.Append($"3: {scores[9]:N3}").AppendLine();
-			sb.Append($"4: {scores[2]:N3}").AppendLine();
-			sb.Append($"5: {scores[5]:N3}").AppendLine();
-			sb.Append($"6: {scores[3]:N3}").AppendLine();
-			sb.Append($"7: {scores[1]:N3}").AppendLine();
-			sb.Append($"8: {scores[6]:N3}").AppendLine();
-			sb.Append($"9: {scores[8]:N3}");
-			return sb.ToString();
+			List<DigitResult> results = new()
+			{
+				new DigitResult(0, scores[0]),
+				new DigitResult(1, scores[7]),
+				new DigitResult(2, scores[4]),
+				new DigitResult(3, scores[9]),
+				new DigitResult(4, scores[2]),
+				new DigitResult(5, scores[5]),
+				new DigitResult(6, scores[3]),
+				new DigitResult(7, scores[1]),
+				new DigitResult(8, scores[6]),
+				new DigitResult(9, scores[8])
+			};
+			return JsonConvert.SerializeObject(results);
 		}
 	}
 }

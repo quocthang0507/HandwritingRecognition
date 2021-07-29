@@ -8,11 +8,11 @@ $(document).ready(function () {
 	var lastX, lastY;
 	var el = document.getElementById('paint');
 	if (!el) return;
-	var ctx_paint = el.getContext('2d');
+	var ctx_paintArea = el.getContext('2d');
 	var slider = document.getElementById("inputWidth");
 	var color = document.getElementById("inputColor");
 	var output = document.getElementById("widthPaint");
-	var chart = document.getElementById('chart');
+	var chartArea = document.getElementById('chart');
 	let chart_object;
 	output.innerHTML = slider.value;
 
@@ -62,22 +62,22 @@ $(document).ready(function () {
 			(document.documentElement.scrollTop || document.body.scrollTop) -
 			el.offsetTop;
 		if (isDown) {
-			ctx_paint.beginPath();
-			ctx_paint.strokeStyle = color.value;
-			ctx_paint.lineWidth = slider.value;
-			ctx_paint.lineJoin = 'round';
-			ctx_paint.moveTo(lastX, lastY);
-			ctx_paint.lineTo(x, y);
-			ctx_paint.closePath();
-			ctx_paint.stroke();
+			ctx_paintArea.beginPath();
+			ctx_paintArea.strokeStyle = color.value;
+			ctx_paintArea.lineWidth = slider.value;
+			ctx_paintArea.lineJoin = 'round';
+			ctx_paintArea.moveTo(lastX, lastY);
+			ctx_paintArea.lineTo(x, y);
+			ctx_paintArea.closePath();
+			ctx_paintArea.stroke();
 		}
 		lastX = x;
 		lastY = y;
 	}
 
 	$('#clearArea').click(function () {
-		ctx_paint.setTransform(1, 0, 0, 1, 0, 0);
-		ctx_paint.clearRect(0, 0, ctx_paint.canvas.width, ctx_paint.canvas.height);
+		ctx_paintArea.setTransform(1, 0, 0, 1, 0, 0);
+		ctx_paintArea.clearRect(0, 0, ctx_paintArea.canvas.width, ctx_paintArea.canvas.height);
 		clearResult();
 	});
 
@@ -90,8 +90,8 @@ $(document).ready(function () {
 				base64Image: el.toDataURL()
 			}
 		}).done(function (msg) {
-			$('#prediction').text(msg.PredictedLabel);
-			scores = JSON.parse(msg.Results);
+			$('#prediction').text(msg.predictedLabel);
+			scores = JSON.parse(msg.results);
 			labels = scores.map(function (e) {
 				return e.Digit
 			});
@@ -108,13 +108,15 @@ $(document).ready(function () {
 
 	function clearResult() {
 		chart_object.destroy();
-		chart.style.display = 'none';
+		chartArea.style.display = 'none';
 		$('#prediction').text('?');
 	}
 
 	function displayChart(labels, data, color) {
-		chart.style.display = '';
-		chart_object = new Chart(chart, {
+		if (chart_object)
+			chart_object.destroy();
+		chartArea.style.display = '';
+		chart_object = new Chart(chartArea, {
 			type: "bar",
 			data: {
 				labels: labels,

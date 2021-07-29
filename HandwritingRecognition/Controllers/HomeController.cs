@@ -1,30 +1,24 @@
 ﻿using HandwritingRecognition.Models;
-using HandwritingRecognitionML.Model;
+using HandwritingRecognition.Lib;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ML;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 
 namespace HandwritingRecognition.Controllers
 {
 	public class HomeController : Controller
 	{
-		private readonly ILogger<HomeController> _logger;
-		private readonly PredictionEnginePool<ModelInput, ModelOutput> _predictionEnginePool;
-		private const int SizeOfImage = 32;
-		private const int SizeOfArea = 4;
+		private readonly ILogger<HomeController> logger;
+		private readonly PredictionEnginePool<ImageDataInMemory, ImagePrediction> predictionEnginePool;
 
-		public HomeController(ILogger<HomeController> logger, PredictionEnginePool<ModelInput, ModelOutput> predictionEnginePool)
+		public HomeController(ILogger<HomeController> logger, PredictionEnginePool<ImageDataInMemory, ImagePrediction> predictionEnginePool)
 		{
-			_logger = logger;
-			_predictionEnginePool = predictionEnginePool;
+			this.logger = logger;
+			this.predictionEnginePool = predictionEnginePool;
 		}
 
 		public IActionResult Index()
@@ -48,74 +42,69 @@ namespace HandwritingRecognition.Controllers
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public IActionResult Upload(string base64Image)
 		{
-			if (string.IsNullOrEmpty(base64Image))
+			if (!ModelState.IsValid || string.IsNullOrEmpty(base64Image))
 			{
 				return BadRequest(new { prediction = "-", dataset = string.Empty });
 			}
-			var pixelValues = GetPixelValuesFromImage(base64Image.Replace("data:image/png;base64,", ""));
-			var input = new ModelInput { PixelValues = pixelValues.ToArray() };
-			var result = _predictionEnginePool.Predict(modelName: HWRModel.Name, example: input);
-			_logger.LogInformation($"Number {result.Prediction} is returned.");
-			return Ok(new
-			{
-				prediction = result.Prediction,
-				scores = FormatScores(result.Score),
-				pixelValues = string.Join(",", pixelValues)
-			});
-		}
 
-		private static List<float> GetPixelValuesFromImage(string base64Image)
-		{
-			var imageBytes = Convert.FromBase64String(base64Image).ToArray();
-
-			// resize the original image and save it as bitmap
-			var bitmap = new Bitmap(SizeOfImage, SizeOfImage);
-			using (var g = Graphics.FromImage(bitmap))
+			byte[] imageData = ImageTransformer.Base64ToByteArray(base64Image);
+			if (imageData == null)
 			{
-				g.Clear(Color.White);
-				using var stream = new MemoryStream(imageBytes);
-				var png = Image.FromStream(stream);
-				g.DrawImage(png, 0, 0, SizeOfImage, SizeOfImage);
+				return BadRequest(new { prediction = "-", dataset = string.Empty });
 			}
-
-			// aggregate pixels in 4X4 area --> 'result' is a list of 64 integers
-			var result = new List<float>();
-			for (var i = 0; i < SizeOfImage; i += SizeOfArea)
-			{
-				for (var j = 0; j < SizeOfImage; j += SizeOfArea)
-				{
-					var sum = 0;        // 'sum' is in the range of [0,16].
-					for (var k = i; k < i + SizeOfArea; k++)
-					{
-						for (var l = j; l < j + SizeOfArea; l++)
-						{
-							if (bitmap.GetPixel(l, k).Name != "ffffffff") sum++;
-						}
-					}
-					result.Add(sum);
-				}
-			}
-
-			return result;
+			return Classify(imageData);
 		}
 
 		private static string FormatScores(IReadOnlyList<float> scores)
 		{
-			// order is: 0,7,4,6,2,5,8,1,9,3 (the order of labels appear in the training data set)
 			List<DigitResult> results = new()
 			{
 				new DigitResult(0, scores[0]),
-				new DigitResult(1, scores[7]),
-				new DigitResult(2, scores[4]),
-				new DigitResult(3, scores[9]),
-				new DigitResult(4, scores[2]),
+				new DigitResult(1, scores[1]),
+				new DigitResult(2, scores[2]),
+				new DigitResult(3, scores[3]),
+				new DigitResult(4, scores[4]),
 				new DigitResult(5, scores[5]),
-				new DigitResult(6, scores[3]),
-				new DigitResult(7, scores[1]),
-				new DigitResult(8, scores[6]),
-				new DigitResult(9, scores[8])
+				new DigitResult(6, scores[6]),
+				new DigitResult(7, scores[7]),
+				new DigitResult(8, scores[8]),
+				new DigitResult(9, scores[9])
 			};
 			return JsonConvert.SerializeObject(results);
+		}
+
+		private IActionResult Classify(byte[] imageData, string filename = null)
+		{
+			// Check that the image is valid
+			if (!imageData.IsValidImage())
+				return StatusCode(StatusCodes.Status415UnsupportedMediaType);
+
+			logger.LogInformation("Start processing image...");
+
+			// Measure execution time
+			Stopwatch watch = Stopwatch.StartNew();
+
+			// Set the specific image data into the ImageInputData type used in the DataView
+			ImageDataInMemory imageInputData = new(imageData, null, null);
+
+			// Predict code for provided image
+			ImagePrediction prediction = predictionEnginePool.Predict(imageInputData);
+
+			// Stop measuring time
+			watch.Stop();
+			long elapsedTime = watch.ElapsedMilliseconds;
+
+			logger.LogInformation($"Image processed in {elapsedTime} miliseconds");
+
+			// Predict the image's label with highest probability
+			ImagePredictedLabelWithProbability bestPrediction = new()
+			{
+				PredictedLabel = prediction.Prediction,
+				Results = FormatScores(prediction.Score),
+				PredictionExecutionTime = elapsedTime,
+				ImageID = filename
+			};
+			return Ok(bestPrediction);
 		}
 	}
 }

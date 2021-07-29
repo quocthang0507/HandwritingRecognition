@@ -90,9 +90,8 @@ $(document).ready(function () {
 				base64Image: el.toDataURL()
 			}
 		}).done(function (msg) {
-			console.log(msg.pixelValues);
-			$('#prediction').text(msg.prediction);
-			scores = JSON.parse(msg.scores);
+			$('#prediction').text(msg.PredictedLabel);
+			scores = JSON.parse(msg.Results);
 			labels = scores.map(function (e) {
 				return e.Digit
 			});

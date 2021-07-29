@@ -1,4 +1,4 @@
-using HandwritingRecognitionML.Model;
+using HandwritingRecognition.Lib;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -20,9 +20,11 @@ namespace HandwritingRecognition
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddCors();
+
 			services.AddControllersWithViews().AddRazorRuntimeCompilation();
-			services.AddPredictionEnginePool<ModelInput, ModelOutput>()
-				.FromFile(modelName: HWRModel.Name, filePath: "MLModel.zip", watchForChanges: true);
+			services.AddPredictionEnginePool<ImageDataInMemory, ImagePrediction>()
+				.FromFile(filePath: "MLModel.zip");
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

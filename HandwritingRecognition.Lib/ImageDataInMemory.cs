@@ -18,7 +18,6 @@ namespace HandwritingRecognition.Lib
 		/// <summary>
 		/// Name of this image file
 		/// </summary>
-		[ColumnName("Label"), LoadColumn(0)]
 		public string Label { get; set; }
 
 		public ImageDataInMemory(string imagePath, string label)

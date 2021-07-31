@@ -1,4 +1,5 @@
 using HandwritingRecognition.Lib.DNN;
+using HandwritingRecognition.Lib.SDCA;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,8 @@ namespace HandwritingRecognition
 			services.AddControllersWithViews().AddRazorRuntimeCompilation();
 			services.AddPredictionEnginePool<ImageDataInMemory, ImagePrediction>()
 				.FromFile(filePath: "MLModel_MobileNet.zip");
+			services.AddPredictionEnginePool<InputData, OutputData>()
+				.FromFile(filePath: "MLModel_SDCA.zip");
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

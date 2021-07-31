@@ -1,8 +1,14 @@
 @{
 	ViewData["Title"] = "Home";
 }
-
 <div class="text-center">
+ <div class="form-group">
+  <label for="selectClassifier">Select a classifier:</label>
+  <select class="form-select" aria-label="Choose a classifier name" id="selectClassifier">
+   <option value="DNN" selected>Deep Neural Network</option>
+   <option value="SDCA">Stochastic Dual Coordinate Ascent Method</option>
+  </select>
+ </div>
  <div class="mb-3">
   <p>Write a number [0-9] in the box.</p>
   <canvas id="paint" width="256" height="256"></canvas>
@@ -33,7 +39,6 @@
   <input id="inputColor" class="form-control-color" type="color" value="#ff0000" title="Choose your color">
  </div>
 </div>
-
 @section Scripts{
 <script type="text/javascript" src="~/lib/charts/chart.min.js"></script>
 }

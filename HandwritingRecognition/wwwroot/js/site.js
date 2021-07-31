@@ -9,9 +9,9 @@ $(document).ready(function () {
 	var el = document.getElementById('paint');
 	if (!el) return;
 	var ctx_paintArea = el.getContext('2d');
-	var slider = document.getElementById("inputWidth");
-	var color = document.getElementById("inputColor");
-	var output = document.getElementById("widthPaint");
+	var slider = document.getElementById('inputWidth');
+	var color = document.getElementById('inputColor');
+	var output = document.getElementById('widthPaint');
 	var chartArea = document.getElementById('chart');
 	let chart_object;
 	output.innerHTML = slider.value;
@@ -82,12 +82,13 @@ $(document).ready(function () {
 	});
 
 	$('#check').click(function () {
-		$('#prediction').text('?');
+		clearResult();
 		$.ajax({
 			type: 'POST',
-			url: 'home/upload',
+			url: 'api/Classify',
 			data: {
-				base64Image: el.toDataURL()
+				base64Image: el.toDataURL(),
+				classifierName: $('#selectClassifier').get(0).value
 			}
 		}).done(function (msg) {
 			$('#prediction').text(msg.predictedLabel);
@@ -100,6 +101,8 @@ $(document).ready(function () {
 				return e.Score
 			});
 			displayChart(labels, data, color.value);
+		}).fail(function (xhr, textStatus, errorThrown) {
+			alert(xhr.responseText);
 		});
 	});
 
@@ -108,7 +111,8 @@ $(document).ready(function () {
 	}
 
 	function clearResult() {
-		chart_object.destroy();
+		if (chart_object)
+			chart_object.destroy();
 		chartArea.style.display = 'none';
 		$('#prediction').text('?');
 		$('#time').text('');
@@ -119,7 +123,7 @@ $(document).ready(function () {
 			chart_object.destroy();
 		chartArea.style.display = '';
 		chart_object = new Chart(chartArea, {
-			type: "bar",
+			type: 'bar',
 			data: {
 				labels: labels,
 				datasets: [{

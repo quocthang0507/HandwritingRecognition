@@ -14,9 +14,16 @@ namespace HandwritingRecognition.Lib
 		/// <returns></returns>
 		public static byte[] Base64ToByteArray(string base64String)
 		{
-			if (base64String.StartsWith("data:image"))
-				return Convert.FromBase64String(base64String.Split(',')[1]);
-			return null;
+			try
+			{
+				if (base64String.StartsWith("data:image"))
+					return Convert.FromBase64String(base64String.Split(',')[1]);
+				return Convert.FromBase64String(base64String);
+			}
+			catch (Exception)
+			{
+				return null;
+			}
 		}
 
 		public static List<float> GetPixels(string base64Image, int imageSize = 32, int areaSize = 4)

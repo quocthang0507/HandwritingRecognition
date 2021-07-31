@@ -10,4 +10,4 @@ This repo is based on three repositories below:
 
 ![Image2](Images/Image2.png "Result 7")
 
-3. This is a multiclass classification model using SDCA (Stochastic Dual Coordinate Ascent) algorithm <https://github.com/dotnet/machinelearning-samples/tree/main/samples/csharp/getting-started/DeepLearning_ImageClassification_Training>. To
+3. This is a multiclass classification model using SDCA (Stochastic Dual Coordinate Ascent) algorithm <https://github.com/dotnet/machinelearning-samples/tree/main/samples/csharp/getting-started/DeepLearning_ImageClassification_Training>.

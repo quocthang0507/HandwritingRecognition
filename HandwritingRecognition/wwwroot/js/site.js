@@ -91,6 +91,7 @@ $(document).ready(function () {
 			}
 		}).done(function (msg) {
 			$('#prediction').text(msg.predictedLabel);
+			$('#time').text(`(in ${msg.predictionExecutionTime} ms)`);
 			scores = JSON.parse(msg.results);
 			labels = scores.map(function (e) {
 				return e.Digit
@@ -110,6 +111,7 @@ $(document).ready(function () {
 		chart_object.destroy();
 		chartArea.style.display = 'none';
 		$('#prediction').text('?');
+		$('#time').text('');
 	}
 
 	function displayChart(labels, data, color) {

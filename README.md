@@ -1,17 +1,13 @@
 # Handwriting Recognition using ML.NET
 
-## [Medium Article](https://codeburst.io/handwriting-recognition-using-ml-net-3ce23a7369af)
+This repo is based on three repositories below:
 
-ML.NET is a cross-platform machine learning framework which provides state-of-art machine learning algorithms, transforms and components. ML.NET allows .NET developers to develop/train models and integrate machine learning with their .NET applications, even without prior expertise of tuning machine learning models.
+* This repo is inspired by <https://github.com/dotnet-labs/HandwritingRecognition> I saw when I looked for many documents about OCR.
 
-In this blog post, we will make a web application to recognize handwriting numbers using ML.NET. The [demo web app](https://ml-recognition.herokuapp.com/) is running in a Linux container, which demonstrates the cross-platform capability of ML.NET and ASP.NET Core.
+* I created an image classifier model with MNIST dataset in JPG format  You can read more about method at <https://github.com/dotnet/machinelearning-samples/tree/main/samples/csharp/getting-started/MulticlassClassification_MNIST>. However, I found that the results are not better than SDCA method with same image.
 
-![handwriting digits recognition](./handwriting-digits-recognition.gif)
+![Image1](Images/Image1.png "Result 1")
 
-## Note
+![Image2](Images/Image2.png "Result 7")
 
-This solution contains two ML.NET models. One is about Handwriting Recognition, the other one is about taxi fare prediction.
-
-## License
-
-Feel free to use the code in this repository as it is under MIT license.
+* This is a multiclass classification model using SDCA (Stochastic Dual Coordinate Ascent) algorithm <https://github.com/dotnet/machinelearning-samples/tree/main/samples/csharp/getting-started/DeepLearning_ImageClassification_Training>. To

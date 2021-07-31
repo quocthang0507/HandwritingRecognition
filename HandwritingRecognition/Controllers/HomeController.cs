@@ -1,5 +1,6 @@
-﻿using HandwritingRecognition.Models;
-using HandwritingRecognition.Lib;
+﻿using HandwritingRecognition.Lib;
+using HandwritingRecognition.Lib.DNN;
+using HandwritingRecognition.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -47,7 +48,7 @@ namespace HandwritingRecognition.Controllers
 				return BadRequest(new { prediction = "-", dataset = string.Empty });
 			}
 
-			byte[] imageData = ImageTransformer.Base64ToByteArray(base64Image);
+			byte[] imageData = ImageUtils.Base64ToByteArray(base64Image);
 			if (imageData == null)
 			{
 				return BadRequest(new { prediction = "-", dataset = string.Empty });
@@ -57,18 +58,10 @@ namespace HandwritingRecognition.Controllers
 
 		private static string FormatScores(IReadOnlyList<float> scores)
 		{
-			List<DigitResult> results = new()
+			List<DigitResult> results = new();
+			for (int i = 0; i < scores.Count; i++)
 			{
-				new DigitResult(0, scores[0]),
-				new DigitResult(1, scores[1]),
-				new DigitResult(2, scores[2]),
-				new DigitResult(3, scores[3]),
-				new DigitResult(4, scores[4]),
-				new DigitResult(5, scores[5]),
-				new DigitResult(6, scores[6]),
-				new DigitResult(7, scores[7]),
-				new DigitResult(8, scores[8]),
-				new DigitResult(9, scores[9])
+				results.Add(new DigitResult(i, scores[i]));
 			};
 			return JsonConvert.SerializeObject(results);
 		}
@@ -106,5 +99,6 @@ namespace HandwritingRecognition.Controllers
 			};
 			return Ok(bestPrediction);
 		}
+
 	}
 }

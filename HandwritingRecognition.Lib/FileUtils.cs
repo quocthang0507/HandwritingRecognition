@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HandwritingRecognition.Lib.DNN;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -58,8 +59,8 @@ namespace HandwritingRecognition.Lib
 		{
 			string[] subDirs = Directory.GetDirectories(pathToOriginalImageFolder);
 			Console.WriteLine($"Found {subDirs.Length} sub-directories in original training folder");
-			List<ImageData> trainingList = new List<ImageData>();
-			List<ImageData> testList = new List<ImageData>();
+			List<ImageData> trainingList = new();
+			List<ImageData> testList = new();
 			Console.WriteLine("I am splitting into two parts...");
 			foreach (var subDir in subDirs)
 			{

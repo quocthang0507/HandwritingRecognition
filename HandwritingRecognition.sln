@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HandwritingRecognition", "H
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HandwritingRecognition.Lib", "HandwritingRecognition.Lib\HandwritingRecognition.Lib.csproj", "{BA324F67-628D-497A-9E75-9E0588D338B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandwritingRecognition.Traniing", "HandwritingRecognition.Training\HandwritingRecognition.Training.csproj", "{C3BAEC6E-C48E-4862-A5F9-07AC85F8324C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HandwritingRecognition.DNN.Training", "HandwritingRecognition.DNN.Training\HandwritingRecognition.DNN.Training.csproj", "{C3BAEC6E-C48E-4862-A5F9-07AC85F8324C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandwritingRecognition.SDCA.Training", "HandwritingRecognition.SDCA.Training\HandwritingRecognition.SDCA.Training.csproj", "{13FD3707-ECE1-40C8-A7F5-68E8D2F72086}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{C3BAEC6E-C48E-4862-A5F9-07AC85F8324C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3BAEC6E-C48E-4862-A5F9-07AC85F8324C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3BAEC6E-C48E-4862-A5F9-07AC85F8324C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13FD3707-ECE1-40C8-A7F5-68E8D2F72086}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13FD3707-ECE1-40C8-A7F5-68E8D2F72086}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13FD3707-ECE1-40C8-A7F5-68E8D2F72086}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13FD3707-ECE1-40C8-A7F5-68E8D2F72086}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

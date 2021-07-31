@@ -174,7 +174,7 @@ namespace HandwritingRecognition.Lib
 			Console.WriteLine($"*************************************************");
 		}
 
-		public static void ShowDataViewInConsole(MLContext mlContext, IDataView dataView, int numberOfRows = 4)
+		public static void ShowDataViewInConsole(IDataView dataView, int numberOfRows = 4)
 		{
 			string msg = string.Format("Show data in DataView: Showing {0} rows with the columns", numberOfRows.ToString());
 			ConsoleWriteHeader(msg);
@@ -285,7 +285,6 @@ namespace HandwritingRecognition.Lib
 
 		public static void ConsolePressAnyKey()
 		{
-			ConsoleColor defaultColor = Console.ForegroundColor;
 			Console.ForegroundColor = ConsoleColor.Green;
 			Console.WriteLine(" ");
 			Console.WriteLine("Press any key to finish.");
@@ -348,16 +347,14 @@ namespace HandwritingRecognition.Lib
 
 		public static void Export_ConfusionMatrix(ConfusionMatrix confusionMatrix, string fullFilePath, string modelName)
 		{
-			using (StreamWriter sw = new StreamWriter(fullFilePath, true, Encoding.UTF8))
+			using StreamWriter sw = new(fullFilePath, true, Encoding.UTF8);
+			sw.WriteLine("CONFUSION TABLE OF " + modelName);
+			sw.WriteLine("Recall,Precision");
+			for (int i = 0; i < confusionMatrix.NumberOfClasses; i++)
 			{
-				sw.WriteLine("CONFUSION TABLE OF " + modelName);
-				sw.WriteLine("Recall,Precision");
-				for (int i = 0; i < confusionMatrix.NumberOfClasses; i++)
-				{
-					sw.WriteLine($"{confusionMatrix.PerClassRecall[i]},{confusionMatrix.PerClassPrecision[i]}");
-				}
-				sw.WriteLine();
+				sw.WriteLine($"{confusionMatrix.PerClassRecall[i]},{confusionMatrix.PerClassPrecision[i]}");
 			}
+			sw.WriteLine();
 		}
 	}
 }

@@ -1,8 +1,6 @@
 # Handwriting Recognition using ML.NET
 
-<a href='https://ko-fi.com/changhuixu' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi3.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
-
-## [Demo Website](https://ml-recognition.herokuapp.com/)
+## [Demo Website](https://ml-8fe3.onrender.com/)
 
 ## [Medium Article](https://codeburst.io/handwriting-recognition-using-ml-net-3ce23a7369af)
 
